@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Hamburger menü işlevselliği
+   
     var menuIcon = document.getElementById('menu-icon');
     var navUl = document.getElementById('nav-ul');
     
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navUl.classList.toggle('show');
     });
 
-    // Blog yazılarını yükleme
+   
     fetch('database/blog.json')
         .then(response => response.json())
         .then(data => {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error loading blog posts:', error));
 
-    // Adres kopyalama işlevselliği
+
     var clipboard = new ClipboardJS('.copy-btn');
     
     clipboard.on('success', function(e) {
