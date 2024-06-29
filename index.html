@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejder Erdoğan</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <header>
+        <nav>
+            <div class="menu-icon" id="menu-icon">
+                &#9776;
+            </div>
+            <ul id="nav-ul">
+                <li><a href="index.html">Ana Sayfa</a></li>
+                <li><a href="./pages/blog.html">Blog</a></li>
+                <li><a href="./pages/map.html">Harita</a></li>
+                <li><a href="./pages/support.html">Destek Ol</a></li>
+                
+            </ul>
+            <div class="right-menu">
+                <a href="#search" class="search-icon"><i class="fas fa-search"></i></a>
+                <a href="https://www.youtube.com/@Artificial_Man666" class="subscribe-button">Abone Ol</a> 
+            </div>
+        </nav>
+    </header>
+    <section id="home">
+        <h1>Ejder ERDOĞAN</h1>
+        <div class="profile">
+            <img src="./img/profile.jpg" alt="Ejder Erdoğan">
+            <p>Merhaba, ben Ejder 👋 Harita mühendisiyim ve yazılım geliştiricisiyim. 
+                Kodlama benim için sadece bir iş değil, yaşam tarzı. 
+                Teknoloji ve blockchain dünyasında kaybolmayı seviyorum. 
+                Spor yaparken kod yazabilseydim, kesin denerdim!
+                Bilgisayar oyunları benim tutkum. Bazen "Bir oyun daha" derken sabahı ettiğim olmuştur. 
+                Burada yazılarımı ve içeriklerimi bulabilirsiniz.</p>
+        </div>
+        <div class="social-icons">
+            <a href="https://opensea.io/ArtificialMan" target="_blank"><i class="fa-regular fa-image"></i></a>
+            <a href="https://www.linkedin.com/in/ejdererdogan/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/LE1DENFROST" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://discord.gg/nYRy9Vy8Mf" target="_blank"><i class="fab fa-discord"></i></a>
+        </div>
+        <div id="search-modal" class="search-modal">
+            <div class="search-modal-content">
+                <span class="close-button">&times;</span>
+                <input type="text" id="search-input" placeholder="Blog yazılarında ara...">
+                <ul id="search-results"></ul>
+            </div>
+        </div> 
+        
+        <div id="menu-modal" class="menu-modal" style="display: none;">
+            <div class="menu-modal-content">
+                <span class="close-menu-button">&times;</span>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="./pages/blog.html">Blog</a></li>
+                    <li><a href="./pages/map.html">Harita</a></li>
+                    <li><a href="./pages/support.html">Destek Ol</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <script src="./script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchIcon = document.querySelector('.search-icon');
+            const searchModal = document.getElementById('search-modal');
+            const closeButton = document.querySelector('.close-button');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            let data = [];
+            fetch('./database/blog.json')
+                .then(response => response.json())
+                .then(jsonData => {
+                    data = jsonData;
+                })
+                .catch(error => console.error('JSON yüklenirken hata oluştu:', error));
+            searchIcon.addEventListener('click', () => {
+                searchModal.style.display = 'block';
+            });
+            closeButton.addEventListener('click', () => {
+                searchModal.style.display = 'none';
+            });
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                searchResults.innerHTML = '';
+                const filteredPosts = data.filter(post => post.title.toLowerCase().includes(query));
+                filteredPosts.forEach(post => {
+                    const resultItem = document.createElement('li');
+                    resultItem.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+                    searchResults.appendChild(resultItem);
+                });
+            });
+        });    
+    </script>
+</body>
+</html>
