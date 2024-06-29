@@ -127,6 +127,9 @@ nav ul li a {
     margin-bottom: 1rem; 
 }
 
+
+
+
 .profile p {
     max-width: 600px; 
     margin: 0 auto; 
@@ -216,15 +219,38 @@ nav ul li a {
     max-width: 600px;
     margin: 0 auto;
     padding: 1rem;
-    border: 1px solid #444;
+    border: px solid #141313;
     border-radius: 10px;
-    background-color: #333;
+    background-color: #3b36360c;
 }
+
+
+.support-content p {
+    max-width: 600px; 
+    margin: 0 auto; 
+    padding: 0 1rem; 
+    color: rgba(34, 212, 34, 0.925); /* Neon yeşil renk, biraz daha saydam */
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5), 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.5), 0 0 40px rgba(0, 255, 0, 0.5), 0 0 80px rgba(0, 255, 0, 0.5); /* Neon ışık efekti, daha az yoğun */
+    font-family: 'Courier New', Courier, monospace;
+    animation: flicker 1.5s infinite alternate;
+
+}
+
+.support-content h3{
+    text-align: left;
+    color: #000000; 
+    text-shadow: 0 0 5px hsl(0, 0%, 100%), 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #30f000, 0 0 80px #1eff16; /* Neon ışık efekti */
+    font-family: 'Orbitron', sans-serif; 
+    letter-spacing: 2px; 
+    animation: flicker 1.5s infinite alternate; 
+    
+}
+
 
 .wallet-address {
     margin: 1rem 0;
     padding: 1rem;
-    background-color: #444;
+    background-color: #00000000;
     border-radius: 5px;
 }
 
@@ -239,14 +265,14 @@ nav ul li a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #444;
+    background-color: #44444411;
     padding: 0.5rem;
     border-radius: 5px;
 }
 
 .copy-btn {
-    background-color: #ff007f;
-    color: white;
+    background-color: #00ff3715;
+    color: rgb(15, 240, 45);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -255,7 +281,7 @@ nav ul li a {
 }
 
 .copy-btn:hover {
-    background-color: #d6006b;
+    background-color: #000000;
 }
 
 .notification {
@@ -415,6 +441,84 @@ nav ul li a {
     text-decoration: underline; 
 }
 
+
+.content {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+article {
+    background: #00000093;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.blog-post {
+    margin-top: 20px;
+}
+
+.blog-post h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.content p {
+    color: rgba(219, 208, 208, 0.836);
+}
+
+.blog-post p {
+    font-size: 1em;
+    line-height: 1.6;
+    color: rgba(219, 208, 208, 0.836);
+}
+
+.code-container {
+    position: relative;
+    width: 100%;
+}
+
+pre {
+    background-color: #030303 !important; 
+    padding: 10px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #2d682fd2;
+    color: rgba(255, 255, 255, 0.644);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    z-index: 1;
+}
+.copy-button:hover{
+    background-color: #000000;
+}
+
+.blog-image {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
 
 
