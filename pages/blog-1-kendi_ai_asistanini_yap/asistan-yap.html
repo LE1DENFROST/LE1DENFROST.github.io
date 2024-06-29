@@ -107,10 +107,11 @@ def soru_sor(soru):
                     <button class="copy-button" onclick="copyCode(this, 'code-block-3')">Kodu kopyala</button>
                     <pre><code class="language-python" id="code-block-3">
 from PyQt6 import QtCore, QtWidgets, QtGui
+from PyQt6.QtWidgets import QLabel, QMessageBox
+import boto3 , os
 from ai import soru_sor
 from pydub import AudioSegment
 from pydub.playback import play
-import boto3, os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -144,7 +145,43 @@ class SoruThread(QtCore.QThread):
                 self.finished.emit("Ses yok!")
         except Exception as e:
             self.finished.emit(str(e))
-                    </code></pre>
+                    
+class SeslendirThread(QtCore.QThread):
+    finished = QtCore.pyqtSignal(str)
+    set_text = QtCore.pyqtSignal(str)
+
+    def __init__(self, soru, parent=None):
+        super(SeslendirThread, self).__init__(parent)
+        self.soru = soru
+
+    def run(self):
+        try:
+            text = self.soru
+            self.set_text.emit(text)  
+            polly = boto3.client('polly', region_name='us-east-1', aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                                    aws_secret_access_key=os.getenv("aws_secret_access_key"))
+            response = polly.synthesize_speech(Engine='neural', Text=text, OutputFormat="mp3", VoiceId="Burcu")
+
+            if "AudioStream" in response:
+                output_file = "speech.mp3"
+                with open(output_file, "wb") as file:
+                    file.write(response["AudioStream"].read())
+
+                
+                sound = AudioSegment.from_file(output_file)
+                play(sound)
+
+                self.finished.emit("Bitti")
+            else:
+                self.finished.emit("Ses yok !")
+        except Exception as e:
+            self.finished.emit(str(e))                   
+        
+        
+        
+        
+        
+        </code></pre>
                 <p>Bu kod, "soru_sor" fonksiyonunu kullanarak yanıtı alır ve Amazon Polly ile sesli yanıt oluşturur. Yanıtı "play" fonksiyonu ile çalar.</p>    
                 
                 <h2>4. PyQt6 ile GUI Oluşturma</h2>  
@@ -153,6 +190,24 @@ class SoruThread(QtCore.QThread):
                 <div class="code-container">
                     <button class="copy-button" onclick="copyCode(this, 'code-block-4')">Kodu kopyala</button>
                     <pre><code class="language-python" id="code-block-4">  
+class OvalButton(QtWidgets.QPushButton):
+    def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+        
+        pen = QtGui.QPen(QtCore.Qt.GlobalColor.transparent)
+        painter.setPen(pen)
+        
+        brush = QtGui.QBrush(QtGui.QColor(0, 255, 0, 100))
+        painter.setBrush(brush)
+        
+        rect = self.rect()
+        painter.drawRoundedRect(rect, 10, 10) 
+        
+        textRect = self.rect()
+        painter.setPen(QtGui.QColor(QtCore.Qt.GlobalColor.white))
+        painter.drawText(textRect, QtCore.Qt.AlignmentFlag.AlignCenter, self.text())
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -160,7 +215,6 @@ class Ui_MainWindow(object):
         MainWindow.move(70, 200)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
         self.asistangif = QLabel(parent=self.centralwidget)
         self.asistangif.setGeometry(QtCore.QRect(10, 0, 341, 311))
         self.asistangif.setCursor(QtCore.Qt.CursorShape.PointingHandCursor)
@@ -181,8 +235,8 @@ class Ui_MainWindow(object):
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.plainTextEdit.setStyleSheet(
             "background-color: rgba(255, 255, 255, 0); color: #00FF00; font-family: Courier; font-size: 12pt;")
-        self.plainTextEdit.setPlaceholderText('..... 🦻')
-
+        self.plainTextEdit.setPlaceholderText('''..... 🦻''')
+        
         self.sor_buton = OvalButton(parent=self.centralwidget)
         self.sor_buton.setGeometry(QtCore.QRect(10, 540, 60, 40))
         self.sor_buton.setObjectName("sor_buton")
@@ -192,24 +246,26 @@ class Ui_MainWindow(object):
         self.seslendir_buton.setObjectName("seslendir_buton")
 
         self.pass_buton = OvalButton(parent=self.centralwidget)
-        self.pass_buton.setGeometry(QtCore.QRect(150, 540, 60, 40))
+        self.pass_buton.setGeometry(QtCore.QRect(150, 540,  60, 40))
         self.pass_buton.setObjectName("pass_buton")
 
         self.pass1_buton = OvalButton(parent=self.centralwidget)
-        self.pass1_buton.setGeometry(QtCore.QRect(220, 540, 60, 40))
+        self.pass1_buton.setGeometry(QtCore.QRect(220, 540,  60, 40))
         self.pass1_buton.setObjectName("pass1_buton")
 
         self.pass2_buton = OvalButton(parent=self.centralwidget)
-        self.pass2_buton.setGeometry(QtCore.QRect(290, 540, 60, 40))
+        self.pass2_buton.setGeometry(QtCore.QRect(290, 540,  60, 40))
         self.pass2_buton.setObjectName("pass2_buton")
 
         MainWindow.setCentralWidget(self.centralwidget)
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.sor_buton.clicked.connect(self.sor)
         self.seslendir_buton.clicked.connect(self.seslendir)
         self.playing = False
+
 
         icon = QtGui.QIcon("./img/icon.ico")
         MainWindow.setWindowIcon(icon)
@@ -226,7 +282,7 @@ class Ui_MainWindow(object):
     def seslendir(self):
         text = self.plainTextEdit.toPlainText()
         if text:
-            if not self.playing:
+            if not self.playing: 
                 self.thread = SeslendirThread(text)
                 self.thread.finished.connect(self.on_finished)
                 self.thread.set_text.connect(self.set_text)
@@ -235,12 +291,13 @@ class Ui_MainWindow(object):
             else:
                 QMessageBox.warning(self.centralwidget, "Uyarı", "Henüz konuşmamı bitirmedim. Beni dinle !")
         else:
-            QMessageBox.warning(self.centralwidget, "Uyarı", "Soru sormadın ki ne deme mi bekliyorsun ?")
+            QMessageBox.warning(self.centralwidget, "Uyarı", " Soru sormadın ki ne deme mi bekliyorsun ?")
+
 
     def sor(self):
         text = self.plainTextEdit.toPlainText()
         if text:
-            if not self.playing:
+            if not self.playing:  
                 self.thread = SoruThread(text)
                 self.thread.finished.connect(self.on_finished)
                 self.thread.set_text.connect(self.set_text)
@@ -249,7 +306,7 @@ class Ui_MainWindow(object):
             else:
                 QMessageBox.warning(self.centralwidget, "Uyarı", "Henüz konuşmamı bitirmedim. Beni dinle !")
         else:
-            QMessageBox.warning(self.centralwidget, "Uyarı", "Soru sormadın ki ne deme mi bekliyorsun ?")
+            QMessageBox.warning(self.centralwidget, "Uyarı", " Soru sormadın ki ne deme mi bekliyorsun ?")
 
     def on_finished(self, result):
         if result == "Bitti":
@@ -262,17 +319,21 @@ class Ui_MainWindow(object):
         self.plainTextEdit.setPlainText(text)
 
     def gif_kontrol(self):
+        
         if not self.movie.state() == QtGui.QMovie.MovieState.Running:
             self.movie.start()
 
+
+
 if __name__ == "__main__":
-import sys
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = QtWidgets.QMainWindow()
-ui = Ui_MainWindow()
-ui.setupUi(MainWindow)
-MainWindow.show()
-sys.exit(app.exec())
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec())
+                    
                     
                     </code></pre>    
                 <p>Bu kod, PyQt6 kullanarak basit bir GUI oluşturur. Bu GUI, kullanıcıdan metin alır, soruyu işler ve yanıtı sesli olarak oynatır.</p>
