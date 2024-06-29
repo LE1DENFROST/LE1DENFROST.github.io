@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kendi Asistanını Yap !</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css" rel="stylesheet" />
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <header>
+        <nav>
+            <div class="menu-icon" id="menu-icon">
+                &#9776;
+            </div>
+            <ul id="nav-ul">
+                <li><a href="../../index.html">Ana Sayfa</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../map.html">Harita</a></li>
+                <li><a href="../support.html">Destek Ol</a></li>
+            </ul>
+            <div class="right-menu">
+                <a href="#search" class="search-icon"><i class="fas fa-search"></i></a>
+                <a href="https://www.youtube.com/@Artificial_Man666" class="subscribe-button">Abone Ol</a> 
+            </div>
+        </nav> 
+    </header>
+
+    <div class="content">
+        <article>
+            <h1>🤖 Kendi AI Asistanını Yap: Python ve PyQt6 ile Adım Adım Rehber</h1>
+            <p>Bu yazıda, Python ve PyQt6 kullanarak kendi AI asistanınızı nasıl oluşturabileceğinizi adım adım göstereceğim. Bu asistan, Google Gemini AI ve Amazon Polly kullanarak sorularınıza yanıt verip, bu yanıtları sesli olarak okuyabilecek. Hazırsanız, başlayalım!</p>
+            
+            <section class="blog-post">
+                
+                <h2>1. Ortam Dosyası (.env)</h2>
+                
+                <p>
+                    Öncelikle uygulama için gerekli 2 adet Api anahtarına sahip olmanız gerekli. 
+                    Aşağıda Gemini ve Polly anahtarlarınızı alabileceğiniz bağlantılar bulunmakta. <br><br>
+                    <a href="https://aistudio.google.com/app/apikey ">Gemini Api</a> <br>
+                    <a href="https://aws.amazon.com/tr/polly">Amazon Polly</a> <br>
+                    <br>
+
+                    İlk adım, API anahtarlarımızı güvenli bir şekilde saklamaktır. 
+                    Bunun için bir .env dosyası oluşturup, aşağıdaki gibi API anahtarlarımızı ekleyelim:</p>
+                    <div class="code-container">
+                        <button class="copy-button" onclick="copyCode(this, 'code-block-1')">Kodu kopyala</button>
+                        <pre><code class="language-text" id="code-block-1">
+GEMINI_API=XXXXXXXXXXXXXXXX
+AWS_ACCESS_KEY_ID= XXXXXXXXXX
+aws_secret_access_key = XXXXXXXXXX
+                    </code></pre>
+                </div>
+                
+                <h2>2. AI Asistanının Temel Fonksiyonları (ai.py)</h2>
+                
+                <p>"ai.py" dosyasını oluşturarak, Google Gemini AI ve Amazon Polly'i yapılandırıp, sorulara yanıt verecek ve bu yanıtları sesli olarak okuyacak fonksiyonları tanımlayalım.</p>
+                <div class="code-container">
+                    <button class="copy-button" onclick="copyCode(this, 'code-block-2')">Kodu kopyala</button>
+                    <pre><code class="language-python" id="code-block-2">
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+def soru_sor(soru):
+    genai.configure(api_key=os.getenv("GEMINI_API"))
+    
+    # Model yapılandırması
+    generation_config = {
+        "temperature": 0.1,
+        "top_p": 0.95,
+        "top_k": 0,
+        "max_output_tokens": 8192,
+    }
+
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+    ]
+
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-pro-latest",
+        generation_config=generation_config,
+        safety_settings=safety_settings
+    )
+
+    convo = model.start_chat(history=[])
+    response = convo.send_message(soru)
+    cleaned_text = response.text.strip().replace("*", "").replace("#", "")
+    return cleaned_text    
+                    </code></pre>
+                </div>
+                <p>Bu kod, Google Gemini AI API'yi yapılandırır ve sorulan soruya yanıt üretir. Yanıt metnini temizler ve döndürür.</p>
+                
+                <h2>3. Sesli Yanıt Oluşturma</h2>
+                
+                <p>Yanıtları sesli olarak okumak için Amazon Polly kullanacağız. İşte bu işlemi gerçekleştiren kod:</p>
+                <div class="code-container">
+                    <button class="copy-button" onclick="copyCode(this, 'code-block-3')">Kodu kopyala</button>
+                    <pre><code class="language-python" id="code-block-3">
+from PyQt6 import QtCore, QtWidgets, QtGui
+from ai import soru_sor
+from pydub import AudioSegment
+from pydub.playback import play
+import boto3, os
+from dotenv import load_dotenv
+load_dotenv()
+
+class SoruThread(QtCore.QThread):
+    finished = QtCore.pyqtSignal(str)
+    set_text = QtCore.pyqtSignal(str)
+
+    def __init__(self, soru, parent=None):
+        super(SoruThread, self).__init__(parent)
+        self.soru = soru
+
+    def run(self):
+        try:
+            text = soru_sor(self.soru)
+            self.set_text.emit(text)
+            polly = boto3.client('polly', region_name='us-east-1', aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                                    aws_secret_access_key=os.getenv("aws_secret_access_key"))
+            response = polly.synthesize_speech(Engine='neural', Text=text, OutputFormat="mp3", VoiceId="Burcu")
+
+            if "AudioStream" in response:
+                output_file = "speech.mp3"
+                with open(output_file, "wb") as file:
+                    file.write(response["AudioStream"].read())
+
+                sound = AudioSegment.from_file(output_file)
+                play(sound)
+
+                self.finished.emit("Bitti")
+                self.set_text.emit("")
+            else:
+                self.finished.emit("Ses yok!")
+        except Exception as e:
+            self.finished.emit(str(e))
+                    </code></pre>
+                <p>Bu kod, "soru_sor" fonksiyonunu kullanarak yanıtı alır ve Amazon Polly ile sesli yanıt oluşturur. Yanıtı "play" fonksiyonu ile çalar.</p>    
+                
+                <h2>4. PyQt6 ile GUI Oluşturma</h2>  
+                
+                <p>Şimdi, kullanıcı arayüzünü oluşturmak için PyQt6 kullanacağız. Bu adımda, asistanın görünümünü ve işlevselliğini tanımlayacağız.</p>
+                <div class="code-container">
+                    <button class="copy-button" onclick="copyCode(this, 'code-block-4')">Kodu kopyala</button>
+                    <pre><code class="language-python" id="code-block-4">  
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(362, 600)
+        MainWindow.move(70, 200)
+        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+
+        self.asistangif = QLabel(parent=self.centralwidget)
+        self.asistangif.setGeometry(QtCore.QRect(10, 0, 341, 311))
+        self.asistangif.setCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        self.image_path = r"img\img.gif"
+        self.movie = QtGui.QMovie(self.image_path)
+        self.asistangif.setMovie(self.movie)
+        self.asistangif.setScaledContents(True)
+        self.movie.start()
+        self.movie.stop()
+
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.ColorRole.Window, QtGui.QColor(0, 0, 0))
+        palette.setColor(QtGui.QPalette.ColorRole.WindowText, QtGui.QColor(255, 255, 255))
+        MainWindow.setPalette(palette)
+
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(parent=self.centralwidget)
+        self.plainTextEdit.setGeometry(QtCore.QRect(10, 320, 341, 211))
+        self.plainTextEdit.setObjectName("plainTextEdit")
+        self.plainTextEdit.setStyleSheet(
+            "background-color: rgba(255, 255, 255, 0); color: #00FF00; font-family: Courier; font-size: 12pt;")
+        self.plainTextEdit.setPlaceholderText('..... 🦻')
+
+        self.sor_buton = OvalButton(parent=self.centralwidget)
+        self.sor_buton.setGeometry(QtCore.QRect(10, 540, 60, 40))
+        self.sor_buton.setObjectName("sor_buton")
+
+        self.seslendir_buton = OvalButton(parent=self.centralwidget)
+        self.seslendir_buton.setGeometry(QtCore.QRect(80, 540, 60, 40))
+        self.seslendir_buton.setObjectName("seslendir_buton")
+
+        self.pass_buton = OvalButton(parent=self.centralwidget)
+        self.pass_buton.setGeometry(QtCore.QRect(150, 540, 60, 40))
+        self.pass_buton.setObjectName("pass_buton")
+
+        self.pass1_buton = OvalButton(parent=self.centralwidget)
+        self.pass1_buton.setGeometry(QtCore.QRect(220, 540, 60, 40))
+        self.pass1_buton.setObjectName("pass1_buton")
+
+        self.pass2_buton = OvalButton(parent=self.centralwidget)
+        self.pass2_buton.setGeometry(QtCore.QRect(290, 540, 60, 40))
+        self.pass2_buton.setObjectName("pass2_buton")
+
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.sor_buton.clicked.connect(self.sor)
+        self.seslendir_buton.clicked.connect(self.seslendir)
+        self.playing = False
+
+        icon = QtGui.QIcon("./img/icon.ico")
+        MainWindow.setWindowIcon(icon)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "SAVITAR AI"))
+        self.sor_buton.setText(_translate("MainWindow", "Sor"))
+        self.seslendir_buton.setText(_translate("MainWindow", "Seslendir"))
+        self.pass_buton.setText(_translate("MainWindow", ""))
+        self.pass1_buton.setText(_translate("MainWindow", ""))
+        self.pass2_buton.setText(_translate("MainWindow", ""))
+
+    def seslendir(self):
+        text = self.plainTextEdit.toPlainText()
+        if text:
+            if not self.playing:
+                self.thread = SeslendirThread(text)
+                self.thread.finished.connect(self.on_finished)
+                self.thread.set_text.connect(self.set_text)
+                self.thread.start()
+                self.gif_kontrol()
+            else:
+                QMessageBox.warning(self.centralwidget, "Uyarı", "Henüz konuşmamı bitirmedim. Beni dinle !")
+        else:
+            QMessageBox.warning(self.centralwidget, "Uyarı", "Soru sormadın ki ne deme mi bekliyorsun ?")
+
+    def sor(self):
+        text = self.plainTextEdit.toPlainText()
+        if text:
+            if not self.playing:
+                self.thread = SoruThread(text)
+                self.thread.finished.connect(self.on_finished)
+                self.thread.set_text.connect(self.set_text)
+                self.thread.start()
+                self.gif_kontrol()
+            else:
+                QMessageBox.warning(self.centralwidget, "Uyarı", "Henüz konuşmamı bitirmedim. Beni dinle !")
+        else:
+            QMessageBox.warning(self.centralwidget, "Uyarı", "Soru sormadın ki ne deme mi bekliyorsun ?")
+
+    def on_finished(self, result):
+        if result == "Bitti":
+            self.playing = False
+            self.movie.stop()
+        else:
+            QMessageBox.warning(self.centralwidget, "Uyarı", result)
+
+    def set_text(self, text):
+        self.plainTextEdit.setPlainText(text)
+
+    def gif_kontrol(self):
+        if not self.movie.state() == QtGui.QMovie.MovieState.Running:
+            self.movie.start()
+
+if __name__ == "__main__":
+import sys
+app = QtWidgets.QApplication(sys.argv)
+MainWindow = QtWidgets.QMainWindow()
+ui = Ui_MainWindow()
+ui.setupUi(MainWindow)
+MainWindow.show()
+sys.exit(app.exec())
+                    
+                    </code></pre>    
+                <p>Bu kod, PyQt6 kullanarak basit bir GUI oluşturur. Bu GUI, kullanıcıdan metin alır, soruyu işler ve yanıtı sesli olarak oynatır.</p>
+                
+                <h2>5. Görsel Dosyalar (img Klasörü)</h2>
+                
+                <p>Asistan görüntüsü ve uygulama simgesini "img" klasörüne atalım. <br>
+                <img src="./1.jpg" alt="Açıklayıcı metin" class="blog-image">
+
+
+                <h3>Sonuç:</h3>
+                
+                <p>Bu adımları takip ederek, Python ve PyQt6 kullanarak kendi AI asistanımızı oluşturmuş olduk. Bu asistan, Google Gemini AI ve Amazon Polly kullanarak sorulara yanıt verecek ve bu yanıtları sesli olarak okuyacak. Umarım bu rehber size yardımcı olmuştur !</p>
+            
+            
+            
+            </section>
+        </article>
+        <div id="disqus_thread"></div>
+            <script>
+                
+                (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://le1denfrost.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+    </div>
+
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <span class="close-button">&times;</span>
+            <input type="text" id="search-input" placeholder="Blog yazılarında ara...">
+            <ul id="search-results"></ul>
+        </div>
+    </div> 
+    <div id="menu-modal" class="menu-modal" style="display: none;">
+        <div class="menu-modal-content">
+            <span class="close-menu-button">&times;</span>
+            <ul>
+                <li><a href="../../index.html">Ana Sayfa</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../map.html">Harita</a></li>
+                <li><a href="../support.html">Destek Ol</a></li>
+            </ul>
+        </div>
+    </div>
+    <script src="../../script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchIcon = document.querySelector('.search-icon');
+            const searchModal = document.getElementById('search-modal');
+            const closeButton = document.querySelector('.close-button');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            let data = [];
+            fetch('../../database/blog.json')
+                .then(response => response.json())
+                .then(jsonData => {
+                    data = jsonData;
+                })
+                .catch(error => console.error('JSON yüklenirken hata oluştu:', error));
+            searchIcon.addEventListener('click', () => {
+                searchModal.style.display = 'block';
+            });
+            closeButton.addEventListener('click', () => {
+                searchModal.style.display = 'none';
+            });
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                searchResults.innerHTML = '';
+                const filteredPosts = data.filter(post => post.title.toLowerCase().includes(query));
+                filteredPosts.forEach(post => {
+                    const resultItem = document.createElement('li');
+                    resultItem.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+                    searchResults.appendChild(resultItem);
+                });
+            });
+        });    
+    
+        function copyCode(button, codeBlockId) {
+            const codeBlock = document.getElementById(codeBlockId);
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            const originalText = button.textContent;
+            button.textContent = 'Kopyalandı!';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
