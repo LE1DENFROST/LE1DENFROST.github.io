@@ -56,8 +56,23 @@ AWS_ACCESS_KEY_ID= XXXXXXXXXX
 aws_secret_access_key = XXXXXXXXXX
                     </code></pre>
                 </div>
-                
                 <h2>2. AI Asistanının Temel Fonksiyonları (ai.py)</h2>
+                <p> Çalışmamız için gerekli tüm kütüphaneleri yüklemek adına bir "requirements.txt" dosyası oluşturalım. Aşağıdaki satırı kopyalayıp kaydedelim.
+                    <div class="code-container">
+                        <button class="copy-button" onclick="copyCode(this, 'code-block-0')">Kodu kopyala</button>
+                        <pre><code class="language-txt" id="code-block-0">
+google-generativeai
+python-dotenv
+PyQt6
+boto3
+pydub
+                </code></pre>
+                <p>Ardından CMD penceresini açıp aşağıdaki komutu girerek kütüphaneleri yükleyelim.</p>    
+                <div class="code-container">
+                    <button class="copy-button" onclick="copyCode(this, 'code-block-00')">Kodu kopyala</button>
+                    <pre><code class="language-cmd" id="code-block-00">
+pip install -r requirements.txt
+                    </code></pre>
                 
                 <p>"ai.py" dosyasını oluşturarak, Google Gemini AI ve Amazon Polly'i yapılandırıp, sorulara yanıt verecek ve bu yanıtları sesli olarak okuyacak fonksiyonları tanımlayalım.</p>
                 <div class="code-container">
