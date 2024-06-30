@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
     let data = [];
-    fetch('http://le1denfrost.github.io/database/blog.json')
+    fetch('https://le1denfrost.github.io/database/blog.json')
         .then(response => response.json())
         .then(jsonData => {
             data = jsonData;
