@@ -59,10 +59,16 @@ nav ul li a {
     top: 0.7rem;
 }
 
+.right-menu i {
+    margin-right: 1rem; /* İkonlar arasına boşluk ekler */
+}
+
+
+
 .search-icon {
     color: white;
     text-decoration: none;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     font-size: 1.1rem; 
 }
 
@@ -520,6 +526,7 @@ code {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+
 /* Google Translate Widget'ı Özelleştirme */
 #google_translate_element {
     display: none; /* Başlangıçta gizli */
@@ -572,6 +579,7 @@ code {
     .right-menu a {
         margin-left: 0.5rem;
     }
+
 }
 
 @media (max-width: 480px) {
