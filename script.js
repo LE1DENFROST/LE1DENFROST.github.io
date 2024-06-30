@@ -105,5 +105,21 @@ document.getElementById('custom_translate_icon').addEventListener('click', funct
     }
 });
 
+function copyCode(button, codeBlockId) {
+    const codeBlock = document.getElementById(codeBlockId);
+    const textArea = document.createElement('textarea');
+    textArea.value = codeBlock.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+
+    const originalText = button.textContent;
+    button.textContent = 'Kopyalandı!';
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+    }, 5000);
+}
 
 
