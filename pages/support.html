@@ -22,9 +22,21 @@
                 <li><a href="support.html">Destek Ol</a></li>
             </ul>
             <div class="right-menu">
+                <div id="google_translate_element" style="display: none;"></div>
+                <i id= "custom_translate_icon" class="fa-solid fa-earth-americas" aria-hidden="true" style="cursor: pointer;"></i>
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({
+                        pageLanguage: 'tr',
+                        includedLanguages: 'en,fr,de,es,it',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                    }, 'google_translate_element');
+                }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
                 <a href="#search" class="search-icon"><i class="fas fa-search"></i></a>
-                <a href="https://www.youtube.com/@Artificial_Man666" class="subscribe-button">Abone Ol</a> 
-            </div>
+                <a href="https://www.youtube.com/@Artificial_Man666" class="subscribe-button">Abone Ol</a>
+           </div>
         </nav>
     </header>
     <section id="support">
@@ -72,41 +84,6 @@
     <div id="notification" class="notification"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script src="../script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchIcon = document.querySelector('.search-icon');
-            const searchModal = document.getElementById('search-modal');
-            const closeButton = document.querySelector('.close-button');
-            const searchInput = document.getElementById('search-input');
-            const searchResults = document.getElementById('search-results');
-            let data = [];
-            fetch('../database/blog.json')
-                .then(response => response.json())
-                .then(jsonData => {
-                    data = jsonData;
-                })
-                .catch(error => console.error('JSON yüklenirken hata oluştu:', error));
-
-            searchIcon.addEventListener('click', () => {
-                searchModal.style.display = 'block';
-            });
-
-            closeButton.addEventListener('click', () => {
-                searchModal.style.display = 'none';
-            });
-
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase();
-                searchResults.innerHTML = '';
-                const filteredPosts = data.filter(post => post.title.toLowerCase().includes(query));
-                filteredPosts.forEach(post => {
-                    const resultItem = document.createElement('li');
-                    resultItem.innerHTML = `<a href="${post.link}">${post.title}</a>`;
-                    searchResults.appendChild(resultItem);
-                });
-            });
-        });    
-
-    </script>
+    
 </body>
 </html>
