@@ -520,7 +520,26 @@ code {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Google Translate Widget'ı Özelleştirme */
+#google_translate_element {
+    display: none; /* Başlangıçta gizli */
+}
 
+#custom_translate_icon {
+    font-size: 1.15rem; /* İkonun boyutunu ayarlayın */
+    color: #ffffff;
+    margin-left: 1rem;
+    vertical-align: middle;
+    transition: color 0.3s ease;
+}
+
+#custom_translate_icon:hover {
+    color: #00ff2a; /* İkonun üzerine gelindiğinde renk değişimi */
+}
+
+.goog-te-banner-frame {
+    display: none !important;
+}
 
 @media (max-width: 768px) {
     nav ul {
