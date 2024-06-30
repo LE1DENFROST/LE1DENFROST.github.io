@@ -2,6 +2,36 @@ document.addEventListener('DOMContentLoaded', function() {
     var menuIcon = document.getElementById('menu-icon');
     var menuModal = document.getElementById('menu-modal');
     var closeMenuButton = document.querySelector('.close-menu-button');
+    const searchIcon = document.querySelector('.search-icon');
+    const searchModal = document.getElementById('search-modal');
+    const closeButton = document.querySelector('.close-button');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    let data = [];
+    fetch('http://le1denfrost.github.io/database/blog.json')
+        .then(response => response.json())
+        .then(jsonData => {
+            data = jsonData;
+        })
+        .catch(error => console.error('JSON yüklenirken hata oluştu:', error));
+    searchIcon.addEventListener('click', () => {
+        searchModal.style.display = 'block';
+    });
+    closeButton.addEventListener('click', () => {
+        searchModal.style.display = 'none';
+    });
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        searchResults.innerHTML = '';
+        const filteredPosts = data.filter(post => post.title.toLowerCase().includes(query));
+        filteredPosts.forEach(post => {
+            const resultItem = document.createElement('li');
+            resultItem.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+            searchResults.appendChild(resultItem);
+        });
+    });
+    
+    
     menuIcon.addEventListener('click', function() {
         menuModal.style.display = 'block';
     });
@@ -63,3 +93,17 @@ const draw = () => {
     }
 };
 setInterval(draw, 40);
+
+
+
+document.getElementById('custom_translate_icon').addEventListener('click', function() {
+    var translateElement = document.getElementById('google_translate_element');
+    if (translateElement.style.display === 'none') {
+        translateElement.style.display = 'block';
+    } else {
+        translateElement.style.display = 'none';
+    }
+});
+
+
+
