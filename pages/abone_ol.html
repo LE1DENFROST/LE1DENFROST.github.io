@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelik Sayfası</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <header>
+        <nav>
+            <div class="menu-icon" id="menu-icon">
+                &#9776;
+            </div>
+            <ul id="nav-ul">
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="./blog.html">Blog</a></li>
+                <li><a href="./map.html">Harita</a></li>
+                <li><a href="./support.html">Destek Ol</a></li>
+            </ul>
+            <div class="right-menu">
+                <div id="google_translate_element" style="display: none;"></div>
+                <i id="custom_translate_icon" class="fa-solid fa-earth-americas" aria-hidden="true" style="cursor: pointer;"></i>
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'tr',
+                            includedLanguages: 'en,fr,de,es,it',
+                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                        }, 'google_translate_element');
+                    }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                <a href="#search" class="search-icon"><i class="fas fa-search"></i></a>
+                <a href="http://127.0.0.1:5500/pages/abone_ol.html" class="subscribe-button">Abone Ol</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="support">
+            <div class="support-content">
+                <h1>Abone Ol 🔔</h1>
+                <p>En son güncellemelerden haberdar olmak için bültenimize abone olun.</p><br>
+                <div id="mc_embed_shell">
+                    <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+                    <div id="mc_embed_signup">
+                        <form action="https://github.us13.list-manage.com/subscribe/post?u=7cc4ba407df2c86b14a54d75c&amp;id=2f1bbf0704&amp;f_id=00c5c2e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                            <div id="mc_embed_signup_scroll">
+                                
+                                <div class="mc-field-group">
+                                    <label for="mce-EMAIL" class="mail_label"><h3>📧E-posta Adresi <span class="asterisk">*</span></h3></label>
+                                    <input type="email" name="EMAIL" class="required_email" id="mce-EMAIL" required="" value="">
+                                </div>
+                                <div class="mc-field-group">
+                                    <label for="mce-FNAME"><h3>👋🏼İsim (isteğe bağlı)</h3></label>
+                                    <input type="text" name="FNAME" class="required_email" id="mce-FNAME" value="">
+                                </div>
+                                <div id="mce-responses" class="clear foot">
+                                    <div class="response" id="mce-error-response" style="display: none;"></div>
+                                    <div class="response" id="mce-success-response" style="display: none;"></div>
+                                </div>
+                                <div class="h-captcha" data-sitekey="64701446-2e3e-4bd2-b896-468444fc2064"></div>
+                                <div class="optionalParent">
+                                    <div class="clear_foot">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="buttonx" value="Abone Ol">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+                    <script type="text/javascript">
+                        (function($$) {
+                            window.fnames = new Array();
+                            window.ftypes = new Array();
+                            fnames[0] = 'EMAIL';
+                            ftypes[0] = 'email';
+                            fnames[1] = 'FNAME';
+                            ftypes[1] = 'text';
+                        }(jQuery));
+                        var $$mcj = jQuery.noConflict(true);
+                    </script>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <span class="close-button">&times;</span>
+            <input type="text" id="search-input" placeholder="Blog yazılarında ara...">
+            <ul id="search-results"></ul>
+        </div>
+    </div>
+
+    <div id="menu-modal" class="menu-modal" style="display: none;">
+        <div class="menu-modal-content">
+            <span class="close-menu-button">&times;</span>
+            <ul>
+                <li><a href="../index.html">Ana Sayfa</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="map.html">Harita</a></li>
+                <li><a href="http://127.0.0.1:5500/pages/support.html">Destek Ol</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>
