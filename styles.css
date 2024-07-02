@@ -11,7 +11,7 @@ body {
 
 h1 {
     color: #000000; 
-    text-shadow: 0 0 5px hsl(0, 0%, 100%), 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #30f000, 0 0 80px #1eff16; /* Neon ışık efekti */
+    text-shadow: 0 0 5px hsl(0, 0%, 100%), 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #30f000, 0 0 80px #1eff16; 
     font-family: 'Orbitron', sans-serif; 
     letter-spacing: 2px; 
     animation: flicker 1.5s infinite alternate; 
@@ -140,7 +140,7 @@ nav ul li a {
     max-width: 600px; 
     margin: 0 auto; 
     padding: 0 1rem; 
-    color: rgba(34, 212, 34, 0.753); /* Neon yeşil renk, biraz daha saydam */
+    color: rgba(34, 212, 34, 0.753); 
     text-shadow: 0 0 5px rgba(0, 255, 0, 0.5), 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.5), 0 0 40px rgba(0, 255, 0, 0.5), 0 0 80px rgba(0, 255, 0, 0.5); /* Neon ışık efekti, daha az yoğun */
     font-family: 'Courier New', Courier, monospace;
     animation: flicker 1.5s infinite alternate;
@@ -235,7 +235,7 @@ nav ul li a {
     max-width: 600px; 
     margin: 0 auto; 
     padding: 0 1rem; 
-    color: rgba(34, 212, 34, 0.925); /* Neon yeşil renk, biraz daha saydam */
+    color: rgba(34, 212, 34, 0.925); 
     text-shadow: 0 0 5px rgba(0, 255, 0, 0.5), 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.5), 0 0 40px rgba(0, 255, 0, 0.5), 0 0 80px rgba(0, 255, 0, 0.5); /* Neon ışık efekti, daha az yoğun */
     font-family: 'Courier New', Courier, monospace;
     animation: flicker 1.5s infinite alternate;
@@ -245,7 +245,7 @@ nav ul li a {
 .support-content h3{
     text-align: left;
     color: #000000; 
-    text-shadow: 0 0 5px hsl(0, 0%, 100%), 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #30f000, 0 0 80px #1eff16; /* Neon ışık efekti */
+    text-shadow: 0 0 5px hsl(0, 0%, 100%), 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #30f000, 0 0 80px #1eff16;
     font-family: 'Orbitron', sans-serif; 
     letter-spacing: 2px; 
     animation: flicker 1.5s infinite alternate; 
@@ -651,7 +651,18 @@ code {
 
 }
 
+#youtube{
+    
+    scale: 150%;
+}
 
+#opensea{
+    margin-right:-15px ;
+}
+
+#github {
+    margin-left: -15px;
+}
 
 
 @media (max-width: 480px) {
