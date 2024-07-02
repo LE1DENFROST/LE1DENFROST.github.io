@@ -26,11 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const filteredPosts = data.filter(post => post.title.toLowerCase().includes(query));
         filteredPosts.forEach(post => {
             const resultItem = document.createElement('li');
-            resultItem.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+            resultItem.innerHTML = `<a href="$${post.link}">$${post.title}</a>`;
             searchResults.appendChild(resultItem);
         });
     });
-    
     
     menuIcon.addEventListener('click', function() {
         menuModal.style.display = 'block';
@@ -53,7 +52,35 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Kopyalama başarısız:', e.action);
     });
     
+  
+    document.getElementById('mc-embedded-subscribe-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const email = document.getElementById('mce-EMAIL').value;
+        const hCaptchaResponse = document.querySelector('[name="h-captcha-response"]').value;
+        
+        if (validateEmail(email) && hCaptchaResponse) {
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            }).then(response => {
+                alert('Başarıyla kayıt oldunuz!');
+                this.reset(); 
+            }).catch(error => {
+                alert('Bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+            });
+        } else {
+            alert('Lütfen geçerli bir e-posta adresi giriniz ve güvenlik doğrulamasını tamamlayınız.');
+        }
+    });
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
 });
+
 function showNotification(message, type = 'success') {
     var notification = document.getElementById('notification');
     notification.textContent = message;
@@ -63,6 +90,7 @@ function showNotification(message, type = 'success') {
         notification.className = 'notification';
     }, 3000);
 }
+
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -94,8 +122,6 @@ const draw = () => {
 };
 setInterval(draw, 40);
 
-
-
 document.getElementById('custom_translate_icon').addEventListener('click', function() {
     var translateElement = document.getElementById('google_translate_element');
     if (translateElement.style.display === 'none') {
@@ -121,5 +147,3 @@ function copyCode(button, codeBlockId) {
         button.textContent = originalText;
     }, 5000);
 }
-
-
