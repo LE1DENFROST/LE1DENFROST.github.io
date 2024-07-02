@@ -546,6 +546,59 @@ code {
     display: none !important;
 }
 
+#mc_embed_signup_scroll {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+
+
+.mc-field-group, #mce-responses {
+    flex: 1 1 100%;
+    margin-bottom: 1rem;
+}
+
+.h-captcha {
+    flex: 1 1 auto;
+    margin-right: 9.3rem;
+    display: flex;
+    justify-content: center;
+}
+
+
+.optionalParent {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+
+.clear_foot .buttonx {
+    padding: 1rem 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    color: #39e90d;
+    border-radius: 0.5rem;
+    border: none;
+    position: relative;
+    background: #221f1f6c;
+    transition: 0.1s;
+}
+
+.clear_foot .buttonx:hover {
+    background-color: white;
+    color: black;
+}
+
+.required_email{
+    background-color: #000000a8;
+    color: #00FF00;
+}
+
+
 @media (max-width: 768px) {
     nav ul {
         display: none;
@@ -578,7 +631,28 @@ code {
         margin-left: 0.5rem;
     }
 
+    .h-captcha, .optionalParent {
+        flex: 1 1 100%;
+        margin-right: 0;
+        margin-left: 0;
+        transform: scale(0.9);
+        transform-origin: center;
+    }
+    
+    .optionalParent {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    #mc_embed_signup_scroll {
+        flex-direction: column;
+        align-items: center;
+    }
+
 }
+
+
+
 
 @media (max-width: 480px) {
     
@@ -597,4 +671,13 @@ code {
         display: flex;
         align-items: center;
     }
+
+
+    .h-captcha {
+        transform: scale(0.8);
+        transform-origin: center;
+    }
+
+
 }
+
